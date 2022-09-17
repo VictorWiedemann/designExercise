@@ -1,9 +1,14 @@
 # designExercise
 Simple game
 
+# dependencies
+ncurses. To install:
+`sudo apt-get install ncurses-dev`
+
 To build and run, call 
+
 `./makeProgram.sh`
-`./
+`./build/simpleGame`
 
 
 
@@ -26,7 +31,7 @@ To build and run, call
 These assumptions would be confirmed before development if I could talk to the product owner)
  - assuming undetermined hardware and running on linux, I will assume the input and outputs are file handles to read/write to.
  - Since I do not have buttons and this is a console, I will use a keyboard to simulate the input for now. There is a concern that the input would be 3 seperate file handles as this would require more work for a responsive single threaded applicaiton. I would request that the undetermined hardware combine the 3 buttons to be a single file handle in the device tree.
- 
+ -I am erring on the side of caution. If we hit a major error, we will continue running as that may be more important than quitting the application early. (my opinion for embedded systems unless otherwise stated). Game breaking bugs will be loud though and visible to the player to let them know something is wrong.
 
 
 Below are the exact notes about the problem:

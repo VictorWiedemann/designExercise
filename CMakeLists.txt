@@ -9,15 +9,17 @@ add_executable(simpleGame src/main.cpp )
 
 
 target_sources(simpleGame 
-                PUBLIC ${CMAKE_SOURCE_DIR}/src/reverse.cpp
+                PUBLIC ${CMAKE_SOURCE_DIR}/src/buttons.cpp
+                PUBLIC ${CMAKE_SOURCE_DIR}/src/led.cpp
+                PUBLIC ${CMAKE_SOURCE_DIR}/src/game.cpp
                 ) 
 
 
 
 
-# target_link_libraries(simpleGame
-#     -lrt
-# )
+target_link_libraries(simpleGame
+    -lncurses
+)
 
 include_directories(${CMAKE_SOURCE_DIR}/inc)
 
