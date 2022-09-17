@@ -2,9 +2,6 @@
 
 #include "game.h"
 
-//TODO remove ncurses when we move to new hardware
-#include <ncurses.h>
-
 int main(int argc, char* argv[])
 {
     Game NewGame;

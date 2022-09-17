@@ -1,0 +1,8 @@
+Test plan
+ - ensure each LED can only be set to LED 1 thru 3
+ - ensure each button can only be set to A, B or c
+ - Any other input quits out of the game
+ - the screen shows the last loss colours when retrying the sequence
+ - the screen shows 3 off leds when a win occurs
+ - add a test mode that prints the sequence to guess for testing purposes
+ - 

@@ -18,7 +18,7 @@ target_sources(simpleGame
 
 
 target_link_libraries(simpleGame
-    -lncurses
+    -lncurses #TODO delete this when moving to hardware
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/inc)

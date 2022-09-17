@@ -7,6 +7,16 @@ enum
     BUTTON_OK = 0,
 };
 
+typedef enum buttonPressed
+{
+    BUTTON_A,
+    BUTTON_B,
+    BUTTON_C,
+    NUM_OF_PLAYABLE_BUTTONS,
+    BUTTON_NOT_PRESSED,
+    BUTTON_ESCAPE,
+}buttonPressed;
+
 class Buttons
 {
 
@@ -16,9 +26,10 @@ public:
 
     /**
      * @brief Blocking call to get the latest button Input
-     * //TODO make this input be non-blocking later in a production setting. Maybe a timeout in a loop to check for ctrl+c
+     * //TODO consider making this input be non-blocking later if other actions are needed
+     * in a production setting. Maybe a timeout in a loop to check for ctrl+c
      */
-    char getButtonInput();
+    buttonPressed getButtonInput();
 
 private:
 
