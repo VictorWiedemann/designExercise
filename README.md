@@ -2,9 +2,6 @@
 Simple game
 
 # dependencies
-ncurses. To install:
-`sudo apt-get install ncurses-dev`
-
 To build and run, call 
 
 `./makeProgram.sh`

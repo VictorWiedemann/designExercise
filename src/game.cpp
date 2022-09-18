@@ -64,7 +64,7 @@ gameState Game::dealWithCurrentState(gameState currentState)
     {
         if (debugMode)
         {
-            std::cout << "running the game" << std::endl;
+            std::cout << "restarted the guesses" << std::endl;
         }
         for (int i = 0; i < NUM_OF_LEDS; i++)
         {
@@ -211,7 +211,6 @@ gameState Game::setGameEndState()
 //--------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------
 // TODO delete everything below this comment when switching to hardware
-#include <ncurses.h>
 #include <stdlib.h>
 
 void Game::refreshScreen()

@@ -17,10 +17,6 @@ target_sources(simpleGame
 
 
 
-target_link_libraries(simpleGame
-    -lncurses #TODO delete this when moving to hardware
-)
-
 include_directories(${CMAKE_SOURCE_DIR}/inc)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")

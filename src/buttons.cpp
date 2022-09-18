@@ -2,9 +2,6 @@
 #include <iostream>
 #include <stdint.h>
 
-// TODO remove ncurses when we move to real hardware
-#include <ncurses.h>
-
 constexpr uint8_t NUM_OF_BUTTONS = 3;
 
 // ASSUMPTION: there are only 3 button IDs
@@ -36,7 +33,7 @@ Buttons::~Buttons()
 buttonPressed Buttons::getButtonInput()
 {
     
-    // TODO replace this getch with the file needed with the switch to hardware. ncurses makes reading single char very easy.
+    // TODO replace this getch with the file needed with the switch to hardware.
     char singleCharacter;
     std::cin >> singleCharacter;
     //end of TODO
