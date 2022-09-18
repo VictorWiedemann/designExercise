@@ -1,8 +1,4 @@
-# designExercise
-Simple game
-
-# dependencies
-To build and run, call 
+# To build and run
 
 `./makeProgram.sh`
 
