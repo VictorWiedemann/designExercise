@@ -157,26 +157,35 @@ gameState Game::checkGuess(buttonPressed buttonRecv, int guessLocation)
 
 void Game::setLedsStates()
 {
-    // from the last LED to the first. See requirements for details.
-    for (int i = NUM_OF_LEDS - 1; i >= 0; i--)
+    // If there are any empty guesses, set the LED 1 and/or 2 to off
+    int guessOffset = 0;
+    for (int i = (NUM_OF_LEDS - 1); i >= 0; i--)
     {
+        if (userGuesses[i] == GUESS_EMPTY)
+        {
+            Leds[i]->setLedColour(LED_OFF);
+            guessOffset++;
+        }
+    }
+
+    // int numberOfGuesses = NUM_OF_LEDS - guessOffset;
+    for (int i = 0; i < (NUM_OF_LEDS - guessOffset); i++)
+    {
+        uint8_t ledNum = guessOffset + i;
         if (userGuesses[i] == GUESS_CORRECT)
         {
-            Leds[i]->setLedColour(LED_GREEN);
+            Leds[ledNum]->setLedColour(LED_GREEN);
         }
         else if (userGuesses[i] == GUESS_DIFF_SPOT)
         {
-            Leds[i]->setLedColour(LED_ORANGE);
+            Leds[ledNum]->setLedColour(LED_ORANGE);
         }
         else if (userGuesses[i] == GUESS_WRONG)
         {
-            Leds[i]->setLedColour(LED_RED);
-        }
-        else
-        {
-            Leds[i]->setLedColour(LED_OFF);
+            Leds[ledNum]->setLedColour(LED_RED);
         }
     }
+
     refreshScreen(); // TODO delete this line when we switch to hardware
 }
 
@@ -222,7 +231,11 @@ void Game::refreshScreen()
         printDebugInfo();
     }
 
-    std::cout << "   LED 1       LED 2       LED 3" << std::endl;
+    for (int i = 0; i < NUM_OF_LEDS; i++)
+    {
+        std::cout << "   LED " << (i + 1) << "    ";
+    }
+    std::cout << std::endl;
     for (Led *eachLed : Leds)
     {
         std::string ledString = getColourText(eachLed->getLedColour());

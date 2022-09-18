@@ -4,11 +4,12 @@
 
 Led::Led(uint8_t ledNum)
 {
-
     if(ledNum > NUM_OF_LEDS || ledNum == 0)
     {
         std::cout << "error, given LED number " << (int)ledNum << " is out of range" << std::endl;
         std::cout << "This will not connect to any hardware" << std::endl;
+        //TODO decide what kind of error handling is best for target hardware
+        exit(-1);
     }
     ledNumber = ledNum;
     currentColour = LED_OFF;

@@ -7,9 +7,30 @@ To build and run, call
 `./makeProgram.sh`
 `./build/simpleGame`
 
+To run the game and be given the answer, run:
+`./runCodeWithDebug.sh`
 
 
-# REQUIREMENTS:
+# How to play:
+Assuming you know the rules of the game (see `Given Requirements` section below):
+- 'a' on the keyboard is BUTTON A
+- 's' on the keyboard is BUTTON B
+- 'd' on the keyboard is BUTTON C
+
+you must press the enter key after entering the character. 
+
+The program will display something that looks like:
+```
+   LED 1       LED 2       LED 3
+   GREEN       GREEN       ORANGE 
+```
+
+# Notes for reviewer:
+ctrl+f the entire project and look for ASSUMPTION and QUESTION. These are things that I would normally bring up in a meeting that I would be looking for responses to. 
+ctrl+f the entire project for TODO items. These are what will be needed to be done for the move to the target hardware.
+
+
+# PARSED REQUIREMENTS:
  - Have 3 outputs. LED 1, 2 ,3 each with 3 colors.
  - Have 3 inputs. 3 Buttons.
  - LED 3 will always be the most recent press
@@ -27,10 +48,11 @@ To build and run, call
 # ASSUMPTIONS: 
 These assumptions would be confirmed before development if I could talk to the product owner)
  - assuming undetermined hardware and running on linux, I will assume the input and outputs are file handles to read/write to.
- - Since I do not have buttons and this is a console, I will use a keyboard to simulate the input for now. There is a concern that the input would be 3 seperate file handles as this would require more work for a responsive single threaded applicaiton. I would request that the undetermined hardware combine the 3 buttons to be a single file handle in the device tree.
- -I am erring on the side of caution. If we hit a major error, we will continue running as that may be more important than quitting the application early. (my opinion for embedded systems unless otherwise stated). Game breaking bugs will be loud though and visible to the player to let them know something is wrong.
+ - Since I do not have buttons and this is a console, I will use a keyboard to simulate the input for now. There is a concern that the input on the target hardware would be 3 seperate file handles as this would require more work for a responsive single threaded applicaiton. I would request that the undetermined hardware combine the 3 buttons to be a single file handle in the device tree.
+ -I am going to assume any bug in the code for this will hard fail. Because of that, the program will immediately stop at an error. Discussion of error handling should happen before moving to the real hardware.
 
 
+# Given Requirements
 Below are the exact notes about the problem:
 
 Given a system with the following:
