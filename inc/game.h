@@ -21,16 +21,23 @@ typedef enum gameState
     GAME_EXIT,
 } gameState;
 
+typedef enum guesses{
+    GUESS_EMPTY,
+    GUESS_CORRECT,
+    GUESS_DIFF_SPOT,
+    GUESS_WRONG,
+}guesses;
+
 class Game
 {
 
 public:
-    Game();
+    Game(bool isDebug = false);
     ~Game();
 
     /**
      * @brief the main loop of the game
-     * 
+     *
      * @return uint8_t an error code
      */
     uint8_t startGame();
@@ -39,7 +46,8 @@ private:
     Led *Leds[NUM_OF_LEDS];
     Buttons *InputButtons;
     buttonPressed sequence[NUM_OF_LEDS];
-    buttonPressed guesses[NUM_OF_LEDS];
+    guesses userGuesses[NUM_OF_LEDS];
+    bool debugMode;
 
     /**
      * @brief restarts the guesses of the game
@@ -56,14 +64,14 @@ private:
     /**
      * @brief hecks the supplied guess by the player. Can change the state of the game.
 
-     * 
+     *
      * @param buttonRecv the button that has been pressed most recently
      */
-    gameState checkGuess(buttonPressed buttonRecv);
+    gameState checkGuess(buttonPressed buttonRecv, int quessLocation);
 
     /**
      * @brief The controlling state machine for the program.
-     * 
+     *
      * @param currentState the current state of the state machine
      * @return the new state of the state machine
      */
@@ -71,9 +79,24 @@ private:
 
     /**
      * @brief Takes the current guessed values and sets the LEDs
-     * 
+     *
      */
     void setLedsStates();
+
+    /**
+     * @brief checks to see if the guessed input is in the sequence
+     *
+     * @param buttonRecv the user-entered value to compare against
+     * @return if the guess shows up in the sequence
+     */
+    bool isInSequence(buttonPressed buttonRecv);
+
+    /**
+     * @brief checks to see if the game was won.
+     *
+     * @return the state of GAME_WIN or GAME_RETRY;
+     */
+    gameState setGameEndState();
 
     //--------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------------------------------
@@ -89,6 +112,12 @@ private:
      *
      */
     void refreshScreen();
+
+    /**
+     * @brief prints the debug information to assist in development.
+     *
+     */
+    void printDebugInfo();
 
     /**
      * @brief Get the Text for the supplied color

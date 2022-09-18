@@ -3,9 +3,9 @@
 #include <iostream>
 #include <stdlib.h>
 
-Game::Game()
+Game::Game(bool isDebug)
 {
-    std::cout << "hello world" << std::endl;
+    debugMode = isDebug;
     for (int i = 1; i <= NUM_OF_LEDS; i++)
     {
         // off by one because we want to label the leds 1-3, but store them 0-2
@@ -30,10 +30,10 @@ uint8_t Game::startGame()
     gameState currentState = GAME_START;
     try
     {
-        // full restart
+        // will exit out if any game breaking issue is hit.
         while (currentState != GAME_EXIT)
         {
-            dealWithCurrentState(currentState);
+            currentState = dealWithCurrentState(currentState);
         }
     }
     catch (int error)
@@ -51,41 +51,54 @@ gameState Game::dealWithCurrentState(gameState currentState)
 
     case GAME_START:
     {
+        if (debugMode)
+        {
+            std::cout << "Starting new game" << std::endl;
+        }
         generateNewSequence();
+        restartGuesses();
+        setLedsStates();
         return GAME_RUNNING;
     }
     case GAME_RUNNING:
     {
+        if (debugMode)
+        {
+            std::cout << "running the game" << std::endl;
+        }
         for (int i = 0; i < NUM_OF_LEDS; i++)
         {
             buttonPressed buttonRecv = InputButtons->getButtonInput();
-            if((buttonRecv < BUTTON_A) || (buttonRecv > BUTTON_C))
+            if ((buttonRecv < BUTTON_A) || (buttonRecv > BUTTON_C))
             {
-                std::cout << "DEV ERROR, button that was recieved is out of range... quitting game\n";
+                std::cout << "the pressed was out of range... quitting game\n"
+                          << std::endl;
                 return GAME_EXIT;
             }
-            
-            gameState newState = checkGuess(buttonRecv);
+
+            gameState newState = checkGuess(buttonRecv, i);
 
             setLedsStates();
-            setLedsStates();
+            // catch any exit conditions.
+            if (newState != GAME_RUNNING)
+            {
+                return newState;
+            }
         }
     }
     case GAME_RETRY:
     {
-        std::cout << "game failure press any button to reset\n This will be removed";
-        InputButtons->getButtonInput();
         restartGuesses();
-        setLedsStates();
+        return GAME_RUNNING;
     }
     case GAME_WIN:
     {
-        //QUESTION: The requirements say to restart right away after a win. I would recommend letting players
-        //enjoy their win before resetting it immediately.
-        restartGuesses();
-        setLedsStates();
+        // QUESTION: The requirements say to restart right away after a win. I would recommend letting players
+        // enjoy their win before resetting it immediately. I will program with my recommendation.
+        return GAME_START;
     }
     default:
+        std::cout << "enexpected error, exiting now." << std::endl;
         return GAME_EXIT;
     }
 }
@@ -94,7 +107,7 @@ void Game::restartGuesses()
 {
     for (int i = 0; i < NUM_OF_LEDS; i++)
     {
-        guesses[i] = BUTTON_NOT_PRESSED;
+        userGuesses[i] = GUESS_EMPTY;
     }
 }
 
@@ -105,22 +118,91 @@ void Game::generateNewSequence()
     {
         sequence[i] = (buttonPressed)(rand() % NUM_OF_PLAYABLE_BUTTONS);
     }
-
-    sequence[0] = BUTTON_A;
-    sequence[1] = BUTTON_B;
-    sequence[2] = BUTTON_C;
 }
 
-gameState Game::checkGuess(buttonPressed buttonRecv)
+gameState Game::checkGuess(buttonPressed buttonRecv, int guessLocation)
 {
-    //TODO VICTOR check the guess logic.
+    // TODO VICTOR check the guess logic.
+    if ((guessLocation < 0) || guessLocation >= NUM_OF_LEDS)
+    {
+        std::cout << "guess number is out of range. Dev error" << std::endl;
+        return GAME_EXIT;
+    }
+
+    // We are directly attaching the guess correctness to the LED state. I would decouple these if there was
+    // any different logic to the game requirements.
+    if ((int)buttonRecv == (int)sequence[guessLocation])
+    {
+        userGuesses[guessLocation] = GUESS_CORRECT;
+    }
+    else if (isInSequence(buttonRecv))
+    {
+        userGuesses[guessLocation] = GUESS_DIFF_SPOT;
+    }
+    else
+    {
+        userGuesses[guessLocation] = GUESS_WRONG;
+    }
+
+    // if last guess
+    if (guessLocation == NUM_OF_LEDS - 1)
+    {
+        return setGameEndState();
+    }
+
+    // QUESTION:: if a player was to guess CBB and the seqeunce was BAA, would the two Bs both be orange? Or would only one?
+    // ASSUMPTION: I will assume that both Bs in the above case is orange, but I would want to confirm this first.
     return GAME_RUNNING;
 }
 
 void Game::setLedsStates()
 {
-    //TODO VICTOR setup the new LED states here based on the guesses
+    // from the last LED to the first. See requirements for details.
+    for (int i = NUM_OF_LEDS - 1; i >= 0; i--)
+    {
+        if (userGuesses[i] == GUESS_CORRECT)
+        {
+            Leds[i]->setLedColour(LED_GREEN);
+        }
+        else if (userGuesses[i] == GUESS_DIFF_SPOT)
+        {
+            Leds[i]->setLedColour(LED_ORANGE);
+        }
+        else if (userGuesses[i] == GUESS_WRONG)
+        {
+            Leds[i]->setLedColour(LED_RED);
+        }
+        else
+        {
+            Leds[i]->setLedColour(LED_OFF);
+        }
+    }
     refreshScreen(); // TODO delete this line when we switch to hardware
+}
+
+bool Game::isInSequence(buttonPressed buttonRecv)
+{
+    for (buttonPressed partOfSequence : sequence)
+    {
+        if ((int)buttonRecv == (int)partOfSequence)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+// ASSUMPTION: since the L
+gameState Game::setGameEndState()
+{
+    for (guesses userGuess : userGuesses)
+    {
+        if (userGuess != GUESS_CORRECT)
+        {
+            return GAME_RETRY;
+        }
+    }
+    return GAME_WIN;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -135,11 +217,40 @@ void Game::setLedsStates()
 void Game::refreshScreen()
 {
     system("clear");
+
+    if (debugMode)
+    {
+        printDebugInfo();
+    }
+
     std::cout << "   LED 1       LED 2       LED 3" << std::endl;
     for (Led *eachLed : Leds)
     {
         std::string ledString = getColourText(eachLed->getLedColour());
         std::cout << "   " << ledString << "   ";
+    }
+    std::cout << std::endl;
+}
+
+void Game::printDebugInfo()
+{
+    std::cout << "pattern is: ";
+    for (int i = 0; i < NUM_OF_LEDS; i++)
+    {
+        switch (sequence[i])
+        {
+        case BUTTON_A:
+            std::cout << " A ";
+            break;
+        case BUTTON_B:
+            std::cout << " B ";
+            break;
+        case BUTTON_C:
+            std::cout << " C ";
+            break;
+        default:
+            std::cout << " error, bad sequence value ";
+        }
     }
     std::cout << std::endl;
 }

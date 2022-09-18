@@ -28,7 +28,6 @@ int Led::setLedColour(ledColour newColour)
         return LED_CANNOT_SET;
     }
     
-    std::cout << "set led with colour " << newColour << std::endl;
     currentColour = newColour;
 
     //TODO SET LED HERE. THIS WILL BE UPDATED WITH THE MOVE TO HARDWARE

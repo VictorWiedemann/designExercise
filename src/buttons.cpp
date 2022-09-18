@@ -17,6 +17,13 @@ typedef struct buttonsInfo
 // This makes it way easier to program around in a single threaded application.
 // If I were to have 3 seperate device tree items, I would have to do some polling or multithreaded work to feel responsive.
 
+//If there were three seperate device tree items, I would have them all be created from this class and then
+//just have this class be the blocking call in the main thread.
+
+Buttons::Buttons()
+{
+}
+
 Buttons::~Buttons()
 {
 }
@@ -28,10 +35,13 @@ Buttons::~Buttons()
  */
 buttonPressed Buttons::getButtonInput()
 {
-    // TODO replace this getch with the file needed with the switch to hardware.
-    char receivedChar = getch();
+    
+    // TODO replace this getch with the file needed with the switch to hardware. ncurses makes reading single char very easy.
+    char singleCharacter;
+    std::cin >> singleCharacter;
+    //end of TODO
 
-    switch (receivedChar)
+    switch (singleCharacter)
     {
     case 'a':
         return BUTTON_A;
