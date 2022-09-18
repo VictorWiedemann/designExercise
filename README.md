@@ -27,7 +27,7 @@ The program will display something that looks like:
 - fun fact: If you change the value "NUM_OF_LEDS" to any positive integer, the game will automatically resize to that many LEDs. This has been tested with 5
 - ctrl+f the entire project and look for ASSUMPTION and QUESTION. These are things that I would normally bring up in a meeting that I would be looking for responses to. 
 - ctrl+f the entire project for TODO items. These are what will be needed to be done for the move to the target hardware.
-
+- There is a requirment to handle button down events only. Since I am using a keyboard, I haven't done anything to deal with this case. The Buttons class hasn't dealt with the buttons backend code.
 
 
 
